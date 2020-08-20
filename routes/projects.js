@@ -1,8 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
+const multer = require('multer');
+const uploadFile = require('../aws_storage/upload');
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
+
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ID,
+  secretAccessKey: process.env.AWS_SECRET,
+});
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'portfolioimageproject',
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString() + '-' + file.originalname);
+    },
+  }),
+});
+
+router.post('/project', upload.single('image'), async (req, res) => {
+  try {
+    const photo = req.file.location;
+    const project = new Project({
+      name: req.body.name,
+      type: req.body.type,
+      tools: req.body.tools,
+      summary: req.body.summary,
+      img: photo,
+    });
+    await project.save();
+    res.send({ success: true, msg: 'Added project to database' });
+  } catch (error) {
+    res.send({ success: false, msg: error.message });
+  }
+});
 
 // Welcome Message
+
 router.get('/', (req, res) => {
   try {
     res.send({
@@ -16,13 +57,11 @@ router.get('/', (req, res) => {
     res.send({ data: { success: false, msg: error } });
   }
 });
-
 // Get all Projects
 router.get('/projects', async (req, res) => {
   const projects = await Project.find();
   res.send(projects);
 });
-
 // Add new Project
 router.post('/project', async (req, res) => {
   try {
@@ -31,15 +70,15 @@ router.post('/project', async (req, res) => {
       type: req.body.type,
       tools: req.body.tools,
       summary: req.body.summary,
-      img: req.body.img,
+      img: req,
     });
-    await project.save();
+    console.log(project);
+    // await project.save();
     res.send({ success: true, msg: 'Project added to the database' });
   } catch (error) {
     res.send({ success: false, msg: error.message });
   }
 });
-
 // Get Project by ID
 router
   .get('/projects/:id', async (req, res) => {
@@ -75,7 +114,6 @@ router
       });
     }
   })
-
   // Update Project
   .put('/projects/:id', async (req, res) => {
     try {

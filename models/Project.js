@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
 
 const projects = new mongoose.Schema({
+  id: {
+    type: ObjectId,
+  },
   name: {
     type: String,
     required: true,
