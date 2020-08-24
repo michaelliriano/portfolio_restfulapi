@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || '3000';
 const config = require('config');
 var projects = require('./routes/projects');
 var mail = require('./routes/guests');
@@ -21,6 +21,9 @@ if (!config.get('PrivateKey')) {
   console.error('FATAL ERROR: PrivateKey is not defined.');
   process.exit(1);
 }
+app.get('/', (req, res) => {
+  res.send('WELCOME TO MY API');
+});
 
 app.use('/', projects);
 app.use('/', mail);
