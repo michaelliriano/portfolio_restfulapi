@@ -21,7 +21,7 @@ router.post('/mail', async (req, res) => {
         res.send({ data: { success: true, msg: 'Message has been sent' } });
       })
       .catch((err) => {
-        res.send({ success: true, msg: 'Could not send email' });
+        res.send({ data: { success: true, msg: 'Could not send email' } });
       });
   } catch (error) {
     res.send({ data: { success: false, msg: 'Could not make request' } });

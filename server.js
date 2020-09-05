@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || '3000';
 const config = require('config');
+const me = require('./routes/me');
 var projects = require('./routes/projects');
 var mail = require('./routes/guests');
 const users = require('./routes/users');
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
 app.use('/', projects);
 app.use('/', mail);
 app.use('/', auth);
-
+app.use('/', me);
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });

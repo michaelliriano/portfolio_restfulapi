@@ -35,10 +35,13 @@ router.post('/project', upload.single('image'), async (req, res) => {
       summary: req.body.summary,
       img: photo,
     });
+
     await project.save();
-    res.send({ success: true, msg: 'Added project to database' });
+    res.send({ data: { success: true, msg: 'Added project to database' } });
+    console.log(photo);
   } catch (error) {
-    res.send({ success: false, msg: error.message });
+    console.log(req.file.location);
+    res.send({ data: { success: false, msg: error.message } });
   }
 });
 
@@ -59,8 +62,12 @@ router.get('/', (req, res) => {
 });
 // Get all Projects
 router.get('/projects', async (req, res) => {
-  const projects = await Project.find();
-  res.send(projects);
+  try {
+    const projects = await Project.find();
+    res.send({ data: { success: true, projects: projects } });
+  } catch (error) {
+    res.send({ data: { success: false, msg: error.message } });
+  }
 });
 // Add new Project
 router.post('/project', async (req, res) => {
@@ -74,9 +81,9 @@ router.post('/project', async (req, res) => {
     });
     console.log(project);
     // await project.save();
-    res.send({ success: true, msg: 'Project added to the database' });
+    res.send({ data: { success: true, msg: 'Project added to the database' } });
   } catch (error) {
-    res.send({ success: false, msg: error.message });
+    res.send({ data: { success: false, msg: error.message } });
   }
 });
 // Get Project by ID
@@ -126,7 +133,9 @@ router
         img: req.body.img,
       };
       const project = await Project.update({ id, $set: project });
-      res.send({ success: true, msg: `${updateProject.name} was updated` });
+      res.send({
+        data: { success: true, msg: `${updateProject.name} was updated` },
+      });
     } catch (error) {
       res.send({
         data: {

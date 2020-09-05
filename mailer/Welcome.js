@@ -17,7 +17,20 @@ async function sendMail(email, name) {
     from: 'auto-reply@michaelliriano.com',
     to: email,
     subject: `Thanks for reaching out!`,
-    html: `<p>Thank you ${name} for reaching out!`,
+    html: `<strong>Thank you ${name} for reaching out! I received your message and will get back to you as soon as possible.</strong>
+    <br>
+    <br>
+    <br>
+    <br>
+    <strong>Best Regards,</strong>
+    <br>
+    <br>
+    <strong>Michael Liriano</strong>
+    <br>
+    <strong>Front End Developer</strong>
+    <br>
+    <strong>Cell: (786) 201-0974 </strong>
+    `,
   };
 
   return new Promise((resolve, reject) => {
