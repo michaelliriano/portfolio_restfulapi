@@ -23,13 +23,19 @@ if (!config.get('PrivateKey')) {
   process.exit(1);
 }
 app.get('/', (req, res) => {
-  res.send('WELCOME TO MY API');
+  res.send({
+    data: {
+      success: true,
+      message:
+        'Hi There, Welcome to my API. Be sure to to make a GET request to api/v1/projects to get a list of all my projects. Thank you and come again.',
+    },
+  });
 });
 
-app.use('/', projects);
-app.use('/', mail);
-app.use('/', auth);
-app.use('/', me);
+app.use('/api/v1/', projects);
+app.use('/api/v1/', mail);
+app.use('/api/v1/', auth);
+app.use('/api/v1/', me);
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
 });

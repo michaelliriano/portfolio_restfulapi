@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Guest = require('../models/Guest');
 const sendMail = require('../mailer/Welcome');
+const notify = require('../mailer/Notify');
 
-router.post('/mail', async (req, res) => {
+router.post('/contact', async (req, res) => {
   try {
     const email = req.body.email;
     const name = req.body.name;
@@ -22,6 +23,13 @@ router.post('/mail', async (req, res) => {
       })
       .catch((err) => {
         res.send({ data: { success: true, msg: 'Could not send email' } });
+      });
+    notify(email, name)
+      .then(() => {
+        console.log('email sent to notify');
+      })
+      .catch((err) => {
+        console.log(err);
       });
   } catch (error) {
     res.send({ data: { success: false, msg: 'Could not make request' } });
