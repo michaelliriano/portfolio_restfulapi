@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Project = require('../models/Project');
 const multer = require('multer');
+const redis = require('redis');
 const uploadFile = require('../aws_storage/upload');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
@@ -80,7 +81,8 @@ router.get('/projects/:id', async (req, res) => {
     const project = await Project.findOne({ _id: id });
     if (project === null) {
       res.send({ data: { success: true, msg: 'This project was deleted' } });
-    } else res.send({ data: { success: true, project: project } });
+    } else redis_client.setex(id, 3600, JSON.stringify(project));
+    res.send({ data: { success: true, project: project } });
   } catch (error) {
     res.send({
       data: {
