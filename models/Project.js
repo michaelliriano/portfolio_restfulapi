@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongodb');
 
+mongoose.set('useCreateIndex', true);
 const projects = new mongoose.Schema({
   id: {
     type: ObjectId,

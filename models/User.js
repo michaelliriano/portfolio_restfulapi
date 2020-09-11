@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-
+mongoose.set('useCreateIndex', true);
 const User = mongoose.model(
   'User',
   new mongoose.Schema({

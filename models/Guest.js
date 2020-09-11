@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+mongoose.set('useCreateIndex', true);
 const guests = new mongoose.Schema({
   name: {
     type: String,
