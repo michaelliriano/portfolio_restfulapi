@@ -55,7 +55,6 @@ router.post('/project', upload.single('image'), async (req, res) => {
 router.get('/projects', async (req, res) => {
   try {
     const projects = await Project.find();
-    console.log(res);
     res.send({
       data: { success: true, length: projects.length, projects: projects },
     });
