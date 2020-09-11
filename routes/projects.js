@@ -26,50 +26,39 @@ const upload = multer({
   }),
 });
 
-// router.post('/project', upload.single('image'), async (req, res) => {
-//   try {
-//     // const photo = req.file.location;
-//     const project = new Project({
-//       name: req.body.name,
-//       type: req.body.type,
-//       tools: req.body.tools,
-//       github: req.body.github,
-//       live: req.body.live,
-//       summary: req.body.summary,
-//       img: photo,
-//     });
-//     // await project.save();
-//     res.send({
-//       data: {
-//         success: false,
-//         msg: 'You do not have permisson to post a project',
-//       },
-//     });
-//   } catch (error) {
-//     console.log(req.file.location);
-//     res.send({ data: { success: false, msg: error.message } });
-//   }
-// });
-
-// Welcome Message
-router.get('/', (req, res) => {
+router.post('/project', upload.single('image'), async (req, res) => {
   try {
+    const photo = req.file.location;
+    const project = new Project({
+      name: req.body.name,
+      type: req.body.type,
+      tools: req.body.tools,
+      github: req.body.github,
+      live: req.body.live,
+      summary: req.body.summary,
+      img: photo,
+    });
+    await project.save();
     res.send({
       data: {
         success: true,
-        msg:
-          'Thank you for visting my page and please feel free to contact me if you have any questions.',
+        msg: `${project.name} has posted`,
       },
     });
   } catch (error) {
-    res.send({ data: { success: false, msg: error } });
+    console.log(req.file.location);
+    res.send({ data: { success: false, msg: error.message } });
   }
 });
+
 // Get all Projects
 router.get('/projects', async (req, res) => {
   try {
     const projects = await Project.find();
-    res.send({ data: { success: true, projects: projects } });
+    console.log(res);
+    res.send({
+      data: { success: true, length: projects.length, projects: projects },
+    });
   } catch (error) {
     res.send({ data: { success: false, msg: error.message } });
   }
@@ -81,8 +70,7 @@ router.get('/projects/:id', async (req, res) => {
     const project = await Project.findOne({ _id: id });
     if (project === null) {
       res.send({ data: { success: true, msg: 'This project was deleted' } });
-    } else redis_client.setex(id, 3600, JSON.stringify(project));
-    res.send({ data: { success: true, project: project } });
+    } else res.send({ data: { success: true, project: project } });
   } catch (error) {
     res.send({
       data: {
@@ -94,8 +82,7 @@ router.get('/projects/:id', async (req, res) => {
   }
 });
 
-// Delete Project
-// .delete('/projects/:id', async (req, res) => {
+// router.delete('/projects/:id', async (req, res) => {
 //   try {
 //     let id = req.params.id;
 //     const project = await Project.findByIdAndDelete({ _id: id });
@@ -108,7 +95,7 @@ router.get('/projects/:id', async (req, res) => {
 //       },
 //     });
 //   }
-// })
+// });
 // Update Project
 // .put('/projects/:id', async (req, res) => {
 //   try {
