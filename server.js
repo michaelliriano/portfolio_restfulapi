@@ -7,6 +7,7 @@ const config = require('config');
 const me = require('./routes/me');
 var projects = require('./routes/projects');
 var mail = require('./routes/guests');
+var profile = require('./routes/profile');
 var path = require('path');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
@@ -19,7 +20,7 @@ app.use('/signup', users);
 require('dotenv').config();
 require('./database/db');
 require('./mailer/Welcome');
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, '/public')));
 app.use(require('body-parser').urlencoded({ extended: false }));
 require('dotenv').config();
 
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/', projects);
+app.use('/api/v1/',profile)
 app.use('/api/v1/', mail);
 app.use('/api/v1/', auth);
 app.use('/api/v1/', me);
